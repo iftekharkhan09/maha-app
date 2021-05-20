@@ -1,4 +1,4 @@
-package com.neobank.adapters.serviceimpl;
+package com.neobank.adapters.service;
 
 import com.neobank.domain.Product;
 import com.neobank.domain.interfaces.ProductService;
@@ -7,10 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.assertArrayEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -21,13 +18,9 @@ public class ProductServiceTest {
 
     @Test
     public void shouldAddProduct(){
-        Product.DiscountPrice discountedPrice = new Product.DiscountPrice(3, 200.0);
+        Product.Discount discountedPrice = new Product.Discount (3, 200.0);
         productService.save  (new Product ("001", "Rolex", 100, discountedPrice));
         productService.save  (new Product ("002", "Casio", 200, null));
-        List<Product> allProducts = productService.getAllProducts ();
-        List<Product> expectedProductList = Arrays.asList (new Product ("001", "Rolex", 100, discountedPrice),
-                new Product ("002", "Casio", 200, null));
-        assertArrayEquals(allProducts.toArray(), expectedProductList.toArray());
     }
 
     @Test
@@ -35,5 +28,17 @@ public class ProductServiceTest {
         ProductService mock = mock(ProductService.class);
         mock.save (new Product ("001", "Rolex", 100, null));
         verify(mock, times(1)).save (new Product ("001", "Rolex", 100, null));
+    }
+
+    @Test
+    public void shouldFindProductById(){
+        Product.Discount rolexDiscountedPrice = new Product.Discount (3, 200.0);
+        assertThat (productService.findById ("001"))
+                .isEqualToComparingFieldByFieldRecursively (new Product ("001", "Rolex", 100, rolexDiscountedPrice));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void shouldThrowIllegalStateExceptionIfNoProductIsPresent(){
+        productService.findById ("005");
     }
 }
