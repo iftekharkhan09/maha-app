@@ -30,7 +30,7 @@ https://maven.apache.org/install.html
    ```
 ### API Endpoint
 
-####Checkout API
+#### Checkout API
 curl -L -X POST "http://localhost:8080/checkout" -H "Content-Type: application/json" --data-raw ${list_of_productIds}
 
 Here `list_of_productIds` is the checked out productIds and can be repeated.
